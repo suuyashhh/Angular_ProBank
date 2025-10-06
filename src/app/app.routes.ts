@@ -8,7 +8,7 @@ export const routes: Routes = [
     },
     {
         path:'USERMASTER',
-        loadComponent:()=> import('./userymaster/landing/landing').then(m => m.Landing),
-        loadChildren:()=> import('./userymaster/userymaster.routes').then(m=> m.UserMaster_Routes)
+        loadComponent:()=> import('./usermaster/landing/landing').then(m => m.Landing),
+        loadChildren:()=> import('./usermaster/usermaster.routes').then(m=> m.UserMaster_Routes)
     }
 ];
