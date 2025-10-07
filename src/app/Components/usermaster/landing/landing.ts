@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Navbar } from '../../shared/navbar/navbar';
-import { Sidebar } from '../../shared/sidebar/sidebar';
+import { Navbar } from '../../../shared/navbar/navbar';
+import { Sidebar } from '../../../shared/sidebar/sidebar';
 
 @Component({
   selector: 'app-landing',

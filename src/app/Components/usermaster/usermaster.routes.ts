@@ -4,10 +4,11 @@ import { Dashboard } from "./dashboard/dashboard";
 export const UserMaster_Routes: Routes = [
   {
     path: '',
-    component: Dashboard   
+    redirectTo:'dashboard',
+    pathMatch:"full"   
   },
   {
     path: 'dashboard',
-    component: Dashboard
+    loadComponent: () => import('./dashboard/dashboard').then(m => m.Dashboard)
   }
 ];

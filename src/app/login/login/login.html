@@ -26,17 +26,17 @@
           <h4 class="mb-1">Welcome to Pro Bank! 👋🏻</h4>
           <p class="mb-5">Please sign-in to your account and start the adventure</p>
 
-          <form id="formAuthentication" class="mb-5" action="index.html" method="POST">
+         <form [formGroup]="form" (ngSubmit)="submit()">
             <div class="form-floating form-floating-outline mb-5">
               <input type="text" class="form-control" id="email" name="email-username" 
-                     placeholder="Enter your email or username" autofocus />
+                     formControlName="INI" placeholder="Enter your email or username" autofocus />
               <label for="email">Email or Username</label>
             </div>
             <div class="mb-5">
               <div class="form-password-toggle">
                 <div class="input-group input-group-merge">
                   <div class="form-floating form-floating-outline">
-                    <input type="password" id="password" class="form-control" name="password"
+                    <input type="password" id="password" class="form-control" name="password" formControlName="CODE"
                       placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
                       aria-describedby="password" />
                     <label for="password">Password</label>

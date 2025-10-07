@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { Login } from './login/login/login';
+import { authGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
     {
@@ -8,7 +9,9 @@ export const routes: Routes = [
     },
     {
         path:'USERMASTER',
-        loadComponent:()=> import('./usermaster/landing/landing').then(m => m.Landing),
-        loadChildren:()=> import('./usermaster/usermaster.routes').then(m=> m.UserMaster_Routes)
+        loadComponent:()=> import('./Components/usermaster/landing/landing').then(m => m.Landing),
+        loadChildren:()=> import('./Components/usermaster/usermaster.routes').then(m=> m.UserMaster_Routes),
+        canActivate:[authGuard],
+        
     }
 ];
