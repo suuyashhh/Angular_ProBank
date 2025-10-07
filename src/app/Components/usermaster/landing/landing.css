@@ -25,3 +25,88 @@
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ---------- Sidebar / Page layout ---------- */
+#layout-menu {
+  width: 260px;
+  transition: transform 0.25s ease, width 0.25s ease;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 1000;
+  background: white;
+}
+
+#layout-menu.collapsed {
+  transform: translateX(-100%);
+  width: 0;
+  overflow: hidden;
+}
+
+.layout-page {
+  transition: margin-left 0.25s ease, width 0.25s ease;
+  margin-left: 260px; /* same as sidebar width */
+}
+
+.layout-page.full-width {
+  margin-left: 0;
+}
+
+/* ---------- Overlay behavior ---------- */
+/* Default: hidden (desktop) */
+.layout-overlay {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 900;
+  background: rgba(0,0,0,0.25);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+/* Make overlay visible & interactive only on screens narrower than 1200px (bootstrap xl) */
+@media (max-width: 1199.98px) {
+  .layout-overlay {
+    display: block;
+  }
+
+  /* Only when we add the show-overlay class should it become visible & intercept clicks */
+  .layout-overlay.show-overlay {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* For small screens: when sidebar is visible, content should not be shifted */
+  .layout-page {
+    margin-left: 0; /* keep content full width on small screens */
+  }
+
+  /* But when sidebar is not collapsed on mobile, slide it in from the left */
+  #layout-menu {
+    transform: translateX(-100%); /* hidden by default on mobile */
+  }
+  #layout-menu:not(.collapsed) {
+    transform: translateX(0); /* shown when not collapsed */
+  }
+}

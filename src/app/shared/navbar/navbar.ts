@@ -1,4 +1,5 @@
-import { Component, inject } from '@angular/core';
+// src/app/shared/navbar/navbar.ts
+import { Component, inject, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { lastValueFrom } from 'rxjs';
@@ -13,13 +14,15 @@ import { Api } from '../../services/api';
   styleUrls: ['./navbar.css']
 })
 export class Navbar {
+  @Output() toggleSidebar = new EventEmitter<void>();   // <-- NEW
+
   private auth = inject(Auth);
   private api = inject(Api);
   private router = inject(Router);
 
   userName: string | null = null;
   userLogin: string | null = null;
-  avatarUrl: string | null = null; // you can map user picture if available
+  avatarUrl: string | null = null;
   loggingOut = false;
 
   constructor() {
@@ -30,25 +33,18 @@ export class Navbar {
     const user = this.auth.getUser();
     this.userName = user?.NAME ?? null;
     this.userLogin = user?.INI ?? null;
-    // if you store avatar url in user details, map it here
     this.avatarUrl = null;
   }
 
   async onLogout() {
-    // Prevent double click
     if (this.loggingOut) return;
     this.loggingOut = true;
-
     try {
-      // Call server logout if token exists; swallow errors but still clear client state
       await lastValueFrom(this.api.authPost('Login/logout', {}));
     } catch (err) {
-      // If server logout fails (token invalid/expired), continue to clear client side anyway
-      console.warn('Server logout failed (continuing to clear client)', err);
+      console.warn('Server logout failed', err);
     } finally {
-      // Clear client storage and redirect to login route (root)
       this.auth.clear();
-      // If your login route is '', navigate there
       await this.router.navigate(['']);
       this.loggingOut = false;
     }

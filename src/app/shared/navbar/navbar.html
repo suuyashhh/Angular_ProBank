@@ -1,8 +1,16 @@
 <!-- style="position: fixed;top: 10px;left: 287px; "  -->
 
-<nav
-  class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme shadow-xs bg-white p-5 mt-3 no-print"
-  id="layout-navbar">
+<nav 
+class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme shadow-xs bg-white p-5 mt-3 no-print"
+     id="layout-navbar">
+
+  <!-- menu toggle -->
+  <button class="btn btn-text-secondary btn-icon me-3"
+        type="button"
+        aria-label="Toggle sidebar"
+        (click)="toggleSidebar.emit()">
+  <i class="ri-menu-3-line ri-24px"></i>
+</button>
 
   <div class="navbar-nav-right d-flex align-items-center no-print" id="navbar-collapse">
     <ul class="navbar-nav flex-row align-items-center ms-auto">
