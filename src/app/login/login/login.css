@@ -1,0 +1,5 @@
+/* dims card when loading to show background activity */
+.card.loading {
+  opacity: 0.8;
+  pointer-events: none; /* prevents interactions */
+}

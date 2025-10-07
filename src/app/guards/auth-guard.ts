@@ -1,5 +1,5 @@
 // src/app/guards/auth-guard.ts
-import { CanActivateFn, Router,  } from '@angular/router';
+import { CanActivateFn, Router } from '@angular/router';
 import { Auth } from '../services/auth';
 import { inject } from '@angular/core';
 
@@ -11,7 +11,7 @@ export const authGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
-  // Not authenticated -> redirect to login (include returnUrl)
-  router.navigate(['/login'], { queryParams: { returnUrl: state.url }});
+  // Not authenticated -> redirect to login route (root in your routes)
+  router.navigate([''], { queryParams: { returnUrl: state.url }});
   return false;
 };

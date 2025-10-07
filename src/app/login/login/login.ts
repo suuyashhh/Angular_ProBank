@@ -4,11 +4,12 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Api } from '../../services/api';
 import { Auth } from '../../services/auth';
 import { Router, RouterModule } from '@angular/router';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule,RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './login.html',
   styleUrls: ['./login.css']
 })
@@ -26,35 +27,47 @@ export class Login {
     CODE: ['', [Validators.required]]
   });
 
+  // optional: toggle password visibility (if you want to implement)
+  showPassword = false;
+  togglePassword() {
+    this.showPassword = !this.showPassword;
+    const el = document.getElementById('password') as HTMLInputElement | null;
+    if (el) el.type = this.showPassword ? 'text' : 'password';
+  }
+
   async submit() {
-    console.log('hi');
+    // clear previous error
     this.serverError = null;
 
+    // guard invalid
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
     const payload = {
-      INI: this.form.value.INI?.trim(),
+      INI: (this.form.value.INI || '').toString().trim(),
       CODE: this.form.value.CODE
     };
 
     this.loading = true;
+  this.form.disable();
+
     try {
-      // Controller endpoint: POST api/Login/authenticate
-      const res: any = await this.api.post('Login/authenticate', payload).toPromise();
-      console.log(res);
+      // API path: POST api/Login/authenticate
+      // Use lastValueFrom to await the observable
+      const res: any = await lastValueFrom(this.api.post('Login/authenticate', payload));
+
       // Expect { token, expires, userDetails }
       if (res && res.token) {
         this.auth.setToken(res.token, res.expires, res.userDetails);
         // navigate to home/dashboard
-        await this.router.navigate(['/USERMASTER']); // change route as appropriate
+        await this.router.navigate(['/USERMASTER']);
       } else {
         this.serverError = 'Invalid server response';
       }
     } catch (err: any) {
-      // handle 400/401/500
+      console.error('Login error', err);
       if (err?.status === 401) {
         this.serverError = 'Invalid credentials';
       } else if (err?.error?.message) {

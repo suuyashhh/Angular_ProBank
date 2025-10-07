@@ -2,18 +2,16 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
-export interface UserDetails {
+export interface UserDetails { 
+    NAME?: string;
   INI?: string;
   LOGIN_IP?: string;
-  NAME?: string;
   AUTHORITY?: string;
   ACTIVATE?: string;
-  [k: string]: any;
-}
+  [k: string]: any; // keep if you still need arbitrary keys
+ }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class Auth {
   private readonly TOKEN_KEY = 'app_token';
   private readonly TOKEN_EXPIRES = 'app_token_expires';
@@ -21,24 +19,31 @@ export class Auth {
 
   constructor(private router: Router) {}
 
+  private hasStorage(): boolean {
+    return typeof window !== 'undefined' && typeof localStorage !== 'undefined';
+  }
+
   setToken(token: string, expiresIsoOrDate: string | Date, userDetails?: UserDetails) {
+    if (!this.hasStorage()) return;
     localStorage.setItem(this.TOKEN_KEY, token);
-    // store expires as ISO string
     const iso = (expiresIsoOrDate instanceof Date) ? expiresIsoOrDate.toISOString() : (expiresIsoOrDate ?? '');
     localStorage.setItem(this.TOKEN_EXPIRES, iso);
     if (userDetails) localStorage.setItem(this.USER_KEY, JSON.stringify(userDetails));
   }
 
   getToken(): string | null {
+    if (!this.hasStorage()) return null;
     return localStorage.getItem(this.TOKEN_KEY);
   }
 
   getUser(): UserDetails | null {
+    if (!this.hasStorage()) return null;
     const raw = localStorage.getItem(this.USER_KEY);
     return raw ? JSON.parse(raw) : null;
   }
 
   clear() {
+    if (!this.hasStorage()) return;
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.TOKEN_EXPIRES);
     localStorage.removeItem(this.USER_KEY);
@@ -46,10 +51,11 @@ export class Auth {
 
   logout(redirect = true) {
     this.clear();
-    if (redirect) this.router.navigate(['/login']);
+    if (redirect) this.router.navigate(['/']); // navigate to login route (root)
   }
 
   isTokenExpired(): boolean {
+    if (!this.hasStorage()) return true; // consider expired on server
     const exp = localStorage.getItem(this.TOKEN_EXPIRES);
     if (!exp) return true;
     const dt = new Date(exp);
@@ -57,16 +63,13 @@ export class Auth {
   }
 
   isAuthenticated(): boolean {
+    // Always safe to call on server; return false (not authenticated) when no storage
     const token = this.getToken();
     if (!token) return false;
-    // quick expiry check using stored expiry
     if (this.isTokenExpired()) return false;
-
-    // optionally verify JTI or remote validation (not implemented client-side)
     return true;
   }
 
-  // helpful: decode payload (base64) to read claims if needed
   decodePayload(): any | null {
     const token = this.getToken();
     if (!token) return null;
@@ -80,7 +83,6 @@ export class Auth {
     }
   }
 
-  // convenience getters
   getUserName(): string | null {
     const u = this.getUser();
     return u?.NAME ?? null;
